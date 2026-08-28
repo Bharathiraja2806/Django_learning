@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
+import logging
 
 # Create your views here.
 def index(request):
+    logger = logging.getLogger('Testing')
+    logger.debug('summa oru debug message')
     return HttpResponse("hello buddy")
 
 def post(request, id):
