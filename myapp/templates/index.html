@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if posts %}
+            {% for post in posts %}
+            <div class="col-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <!-- <img style="height:300; width:300;" src="{{post.formatted_img_url}}" class="img-fluid" alt="..."> -->
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="card-title">{{post.name}}</h5>
+                                <p class="card-text">{{post.age}}</p>
+                                <a href="{% url 'myapp:post' post.id %}" class="btn btn-primary">View Post</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+    {% endif %}
+</body>
+</html>
