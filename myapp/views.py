@@ -3,7 +3,8 @@ from django.http import HttpResponse, Http404
 from django.urls import reverse
 import logging
 from myapp.models import Post
-
+from django.core.paginator import Paginator
+from .forms import Contactform
 
 # heello = [
 #     {"id": 1, "name": "John", "age": 30},
@@ -13,22 +14,30 @@ from myapp.models import Post
 
 # Create your views here.
 def index(request):
-    data = Post.objects.all()
-    logger = logging.getLogger('Testing')
-    logger.debug('summa oru debug message')
-    return render(request, "index.html", {"posts": data})
+    all_data = Post.objects.all()
+
+    pagionate_data = Paginator(all_data, 5) # Show 5 posts per page
+
+    page_number = request.GET.get('page')
+
+    page_object = pagionate_data.get_page(page_number)
+
+    # logger = logging.getLogger('Testing')
+    # logger.debug('summa oru debug message')
+    return render(request, "index.html", {"page_object": page_object})
 
 def post(request, id):
     # data = next((item for item in heello if item["id"] == int(id)), None)
     try:
         data = Post.objects.get(slug=id) #either we can give id =  , or pk = id, both are same, but pk (primary key) is more generic, as it can be used for any primary key, not just id
-        logger = logging.getLogger('Testing')
-        logger.debug(f"the post variable is {data}")
+        related_post = Post.objects.filter(category = data.category).exclude(pk=data.id)
+        # logger = logging.getLogger('Testing')
+        # logger.debug(f"the post variable is {data}")
 
     except Post.DoesNotExist:
         raise Http404("Post does not exist")
     
-    return render(request, "post.html", {"post" : data})
+    return render(request, "post.html", {"post" : data, "related_post" : related_post})
 
 def firstpage(request):
     return render(request, 'firstpage.html')
@@ -41,3 +50,21 @@ def samplepage(request):
 
 def new_sample_page(request):
     return HttpResponse('this is a old monk redirect page')
+
+def contact(request):
+    if request.method == "POST":
+        form = Contactform(request.POST)
+        name = request.POST.get('name')
+        email = request.POST.get('email')   
+        message = request.POST.get('message')
+        if form.is_valid():
+
+            logger = logging.getLogger('Testing')
+            logger.debug('form data is %s', form.cleaned_data['name'])
+            message = 'Your email saved successfully!'
+            return render(request, 'contact.html', {'form': form, 'message': message})
+        else:
+            logger = logging.getLogger('Testing')
+            logger.debug('form is not valid')
+        return render(request, 'contact.html', {'form': form, 'name': name, 'email': email, 'message': message})
+    return render(request, 'contact.html')
