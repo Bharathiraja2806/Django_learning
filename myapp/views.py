@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.urls import reverse
 import logging
-from myapp.models import Post
+from myapp.models import Post, about_us
 from django.core.paginator import Paginator
-from .forms import Contactform
+from .forms import Contactform, register_form
 
 # heello = [
 #     {"id": 1, "name": "John", "age": 30},
@@ -68,3 +68,26 @@ def contact(request):
             logger.debug('form is not valid')
         return render(request, 'contact.html', {'form': form, 'name': name, 'email': email, 'message': message})
     return render(request, 'contact.html')
+
+def about(request):
+
+    about_content = about_us.objects.first()  # Fetch the first instance of about_us model
+    if about_content is None or about_content.content is None:
+        default_content = "This is the default about us content."
+        return render(request, 'about.html', {'about_content': default_content})
+    else:
+        about_content = about_us.objects.first()  # Get the content field from the instance
+    return render(request, 'about.html', {'about_content': about_content.content})
+
+def register(request):
+    form = register_form()
+    if request.method == "POST":
+        form = register_form(request.POST)
+        if form.is_valid():
+            user = form.save(commit = False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            message = 'Your email saved successfully!'
+            return render(request, 'register.html', {'form': form, 'message': message})
+  
+    return render(request, 'register.html', {'form': form})

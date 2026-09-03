@@ -10,5 +10,7 @@ urlpatterns = [
     path('secondpage/', views.secondpage, name='secondpage'),
     path('old_monk/', views.new_sample_page, name='old_monk'),
     path('contact/', views.contact, name='contact'),
+    path('about/', views.about, name='about'),
+    path('register/', views.register, name='register'),
 ]
 
