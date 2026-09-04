@@ -4,7 +4,9 @@ from django.urls import reverse
 import logging
 from myapp.models import Post, about_us
 from django.core.paginator import Paginator
-from .forms import Contactform, register_form
+from .forms import Contactform, register_form, LoginForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 # heello = [
 #     {"id": 1, "name": "John", "age": 30},
@@ -87,7 +89,31 @@ def register(request):
             user = form.save(commit = False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            message = 'Your email saved successfully!'
-            return render(request, 'register.html', {'form': form, 'message': message})
+            messages.success(request, "Registeration successful! You can now log in.")
+            # message = 'Your email saved successfully!'
+            # return render(request, 'register.html', {'form': form, 'message': message})
+            return redirect('myapp:login')
   
     return render(request, 'register.html', {'form': form})
+
+def login(request):
+    form = LoginForm()
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                return redirect('myapp:dashboard')  # Redirect to a success page after login
+    return render(request, 'login.html', {'form': form})
+
+def dashboard(request):
+    blog_title = 'My Blog'
+    return render(request, 'dashboard.html', {'blog_title': blog_title})
+
+def logout(request):
+    auth_logout(request)
+    return redirect('myapp:index')  # Redirect to the index page after logout
