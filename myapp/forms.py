@@ -46,3 +46,16 @@ class LoginForm(forms.Form):
             user = authenticate(username=username, password=password)
             if not user:
                 raise forms.ValidationError("Invalid username or password.")
+
+class ForgotPasswordForm(forms.Form):
+
+    email = forms.EmailField(label="Email", required=True)
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        email = cleaned_data.get('email')
+
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError("No user is associated with this email address.")

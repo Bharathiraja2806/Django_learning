@@ -4,7 +4,7 @@ from django.urls import reverse
 import logging
 from myapp.models import Post, about_us
 from django.core.paginator import Paginator
-from .forms import Contactform, register_form, LoginForm
+from .forms import Contactform, ForgotPasswordForm, register_form, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
@@ -117,3 +117,10 @@ def dashboard(request):
 def logout(request):
     auth_logout(request)
     return redirect('myapp:index')  # Redirect to the index page after logout
+
+def forgot_password(request):
+
+    if request.method == "POST":
+        form = ForgotPasswordForm(request.POST)
+        
+    return render(request, 'forgot_password.html')

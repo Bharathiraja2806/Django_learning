@@ -51,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'myproject.middleware.AuthenticateMiddleware',  # Add the custom middleware here
+    'myproject.middleware.RegisterAuthenticated',  # Add the custom middleware here
 ]
 
 ROOT_URLCONF = 'myproject.urls'
