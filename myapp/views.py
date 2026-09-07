@@ -7,6 +7,13 @@ from django.core.paginator import Paginator
 from .forms import Contactform, ForgotPasswordForm, register_form, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import force_bytes, force_str
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 
 # heello = [
 #     {"id": 1, "name": "John", "age": 30},
@@ -122,5 +129,20 @@ def forgot_password(request):
 
     if request.method == "POST":
         form = ForgotPasswordForm(request.POST)
-        
+        if form.is_valid():
+
+            email = form.cleaned_data('email')
+            user = User.objects.get(email=email)
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            current_site = get_current_site(request)
+            domain = current_site.domain
+            subject = "password reset requested"
+            message = render_to_string('password_reset.html', {'domain': domain, 'uid': uid, 'token': token})
+            mail_sent = send_mail(subject, message, 'noreply@myapp.com', [email])
+            messages.success(request, "Password reset email sent! Please check your inbox.")
+            
     return render(request, 'forgot_password.html')
+
+def reset_password(request):
+    pass
