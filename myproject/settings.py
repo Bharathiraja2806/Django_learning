@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'blog',
         'USER': 'root',
-        'PASSWORD': '4005',
+        'PASSWORD': 'isss@123',
         'HOST': 'localhost',
         'PORT': '3306'
     }
@@ -132,11 +132,11 @@ STATICFILES_DIRS = [
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+# MAILERS = {
+#     'default': {
+#         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+#     },
+# }
 
 
 LOGGING = {
@@ -156,3 +156,11 @@ LOGGING = {
         },
     },
 }
+
+DEFAULT_FROM_EMAIL = 'bharathi@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'c5bde94d80ee7c'
+EMAIL_HOST_PASSWORD = '63c700b6d5c885'

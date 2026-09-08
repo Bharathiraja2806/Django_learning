@@ -59,3 +59,19 @@ class ForgotPasswordForm(forms.Form):
 
         if not User.objects.filter(email=email).exists():
             raise forms.ValidationError("No user is associated with this email address.")
+
+class reset_password(forms.Form):
+
+    new_password = forms.CharField(max_length=100, required=True)
+    confirm_new_password = forms.CharField(max_length=100, required=True)
+
+    def clean(self):
+
+        cleaned_data  = super().clean()
+
+        new_password = cleaned_data.get('new_password')
+        confirm_new_password = cleaned_data.get('confirm_new_password')
+
+        if new_password and confirm_new_password and new_password != confirm_new_password:
+
+            raise forms.ValidationError("Password doesnot match!")

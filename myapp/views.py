@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.http import force_bytes, force_str
+from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 
@@ -126,23 +126,47 @@ def logout(request):
     return redirect('myapp:index')  # Redirect to the index page after logout
 
 def forgot_password(request):
-
+    form = ForgotPasswordForm()
     if request.method == "POST":
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
 
-            email = form.cleaned_data('email')
-            user = User.objects.get(email=email)
+            email = form.cleaned_data['email']
+            user = User.objects.filter(email=email).first()
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             current_site = get_current_site(request)
             domain = current_site.domain
             subject = "password reset requested"
-            message = render_to_string('password_reset.html', {'domain': domain, 'uid': uid, 'token': token})
-            mail_sent = send_mail(subject, message, 'noreply@myapp.com', [email])
+            message = render_to_string('password_reset_email.html', {'domain': domain, 'uid': uid, 'token': token})
+            send_mail(subject, message, 'noreply@gmail.com', [email])
             messages.success(request, "Password reset email sent! Please check your inbox.")
             
-    return render(request, 'forgot_password.html')
+    return render(request, 'forgot_password.html', {'form' : form})
 
-def reset_password(request):
-    pass
+def reset_password(request,  uidb64, token):
+
+    if request.method == 'POST':
+
+        form = reset_password(request.POST)
+
+        if form.is_valid():
+
+            new_password = form.cleaned_data["new_password"]
+
+            try:
+
+                uid = urlsafe_base64_decode(uidb64)
+                user = User.objects.get(pk=uid)
+            except(ValueError, TypeError, User.DoesNotExist):
+                user = None
+
+            if user is not None and default_token_generator(user, token):
+
+                user.set_password(new_password)
+                user.save()
+
+                messages.success(request, "New password set successfully!")
+                return redirect('myapp:login')
+            
+    return render(request, 'password_reset.html')
