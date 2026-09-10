@@ -4,7 +4,7 @@ from django.urls import reverse
 import logging
 from myapp.models import Post, about_us
 from django.core.paginator import Paginator
-from .forms import Contactform, ForgotPasswordForm, register_form, LoginForm
+from .forms import Contactform, ForgotPasswordForm, register_form, LoginForm, ResetPasswordForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
@@ -146,22 +146,23 @@ def forgot_password(request):
 
 def reset_password(request,  uidb64, token):
 
+    form = ResetPasswordForm()
+
     if request.method == 'POST':
 
-        form = reset_password(request.POST)
+        form = ResetPasswordForm(request.POST)
 
         if form.is_valid():
 
             new_password = form.cleaned_data["new_password"]
 
             try:
-
                 uid = urlsafe_base64_decode(uidb64)
                 user = User.objects.get(pk=uid)
             except(ValueError, TypeError, User.DoesNotExist):
-                user = None
+                user = None 
 
-            if user is not None and default_token_generator(user, token):
+            if user is not None and default_token_generator.check_token(user, token):
 
                 user.set_password(new_password)
                 user.save()
@@ -169,4 +170,7 @@ def reset_password(request,  uidb64, token):
                 messages.success(request, "New password set successfully!")
                 return redirect('myapp:login')
             
-    return render(request, 'password_reset.html')
+            else:
+                messages.error(request, "Password reset link is invalid!")
+            
+    return render(request, 'password_reset.html', {'form': form})
