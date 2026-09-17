@@ -1,6 +1,9 @@
+from dataclasses import fields
+
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from .models import Categories, Post
 
 class Contactform(forms.Form):
 
@@ -75,3 +78,27 @@ class ResetPasswordForm(forms.Form):
         if new_password and confirm_new_password and new_password != confirm_new_password:
 
             raise forms.ValidationError("Password doesnot match!")
+
+class PostForm(forms.ModelForm):
+
+    title = forms.CharField(label="Title", max_length=200, required=True)
+    content = forms.CharField(label="Content", required=True)
+    category = forms.ModelChoiceField(label="category", required=True, queryset=Categories.objects.all())
+
+    class Meta:
+
+        model = Post
+        fields = ["title", "content", "category"]
+
+        def clean(self):
+
+            cleaned_data = super().clean()
+
+            title = cleaned_data.get('title')
+            content = cleaned_data.get('content')
+
+            if title and len(title) < 5:
+                raise forms.ValidationError("Title must be at least 5 characters long.")
+
+            if content and len(content) < 10:
+                raise forms.ValidationError("Title must be at least 10 characters long.")
