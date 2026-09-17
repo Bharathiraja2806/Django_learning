@@ -188,13 +188,16 @@ def reset_password(request,  uidb64, token):
 def new_post(request):
 
     categories = Categories.objects.all()
+
     form = PostForm()
 
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
 
         if form.is_valid():
-            post = form.save()
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
             return redirect('myapp:dashboard')
 
     return render(request, 'new_post.html', {'categories': categories, 'form' : form}) 

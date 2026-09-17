@@ -35,12 +35,12 @@
             {% for post in page_object %}
 
                 <div class="col-12 col-md-6 col-lg-4">
-
+ 
                     <div class="card h-100 shadow-sm">
 
                         <!-- Post Image -->
                         <img
-                            src="{{ post.image_url }}"
+                            src="{{ post.image_url.url }}"
                             class="card-img-top"
                             alt="{{ post.title }}"
                             style="height: 250px; object-fit: cover;"

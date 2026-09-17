@@ -83,22 +83,39 @@ class PostForm(forms.ModelForm):
 
     title = forms.CharField(label="Title", max_length=200, required=True)
     content = forms.CharField(label="Content", required=True)
-    category = forms.ModelChoiceField(label="category", required=True, queryset=Categories.objects.all())
+    category = forms.ModelChoiceField(label="Category", required=True, queryset=Categories.objects.all())
+    image_url = forms.ImageField(label="Image Upload", required=False)
 
     class Meta:
 
         model = Post
-        fields = ["title", "content", "category"]
+        fields = ["title", "content", "category", "image_url"]
 
-        def clean(self):
+    def clean(self):
 
-            cleaned_data = super().clean()
+        cleaned_data = super().clean()
 
-            title = cleaned_data.get('title')
-            content = cleaned_data.get('content')
+        title = cleaned_data.get('title')
+        content = cleaned_data.get('content')
 
-            if title and len(title) < 5:
-                raise forms.ValidationError("Title must be at least 5 characters long.")
+        if title and len(title) < 5:
+            raise forms.ValidationError("Title must be at least 5 characters long.")
 
-            if content and len(content) < 10:
-                raise forms.ValidationError("Title must be at least 10 characters long.")
+        if content and len(content) < 10:
+            raise forms.ValidationError("Title must be at least 10 characters long.")
+
+    def save(self, commit = ...):
+
+        post = super().save(commit)
+        cleaned_data = super().clean()
+
+        if cleaned_data.get('image_url'):
+            post.image_url = cleaned_data.get('image_url')
+        else:
+            img_url = "https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227724992-stock-illustration-image-available-icon-flat-vector.jpg"
+
+            post.image_url = img_url
+
+        if commit:
+            post.save()
+        return post

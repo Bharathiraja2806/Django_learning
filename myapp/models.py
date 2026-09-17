@@ -15,7 +15,7 @@ class Categories(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    image_url = models.URLField(null=True)
+    image_url = models.ImageField(null=True, upload_to='posts/images')
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True)
     category = models.ForeignKey(Categories, on_delete = models.CASCADE, related_name='posts')
