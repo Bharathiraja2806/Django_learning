@@ -204,5 +204,4 @@ def new_post(request):
 
 def edit_post(request, id):
     categories = Categories.objects.all()
-    data = 
     return render(request, 'edit_post.html', {"categories" : categories})
