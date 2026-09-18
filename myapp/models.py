@@ -37,5 +37,6 @@ class Post(models.Model):
 class about_us(models.Model):
 
     content = models.TextField()
+    return render(request, "about.html")
 
 
