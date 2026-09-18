@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 
+
 class Categories(models.Model):
 
     name = models.CharField(max_length=100)
@@ -27,7 +28,14 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def formatted_image_url(self):
+        url = self.image_url if self.image_url.__str__().startswith(('http', 'https')) else self.image_url.url
+        return url
     
 class about_us(models.Model):
 
     content = models.TextField()
+
+

@@ -201,3 +201,8 @@ def new_post(request):
             return redirect('myapp:dashboard')
 
     return render(request, 'new_post.html', {'categories': categories, 'form' : form}) 
+
+def edit_post(request, id):
+    categories = Categories.objects.all()
+    data = 
+    return render(request, 'edit_post.html', {"categories" : categories})

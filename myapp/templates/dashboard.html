@@ -40,7 +40,7 @@
 
                         <!-- Post Image -->
                         <img
-                            src="{{ post.image_url.url }}"
+                            src="{{ post.formatted_image_url }}"
                             class="card-img-top"
                             alt="{{ post.title }}"
                             style="height: 250px; object-fit: cover;"
@@ -68,6 +68,8 @@
                                 </a>
 
                                 <h5 class="card-title">{{post.category.name}}</h5>
+
+                                <a href="{% url 'myapp:edit_post' id = post.id %}">Edit</a>
                             </div>
 
                         </div>
