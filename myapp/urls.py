@@ -18,5 +18,5 @@ urlpatterns = [
     path('forgotpassword/', views.forgot_password, name='forgot_password'),
     path("reset_password/<uidb64>/<token>", views.reset_password, name="reset_password"),
     path("new_post/", views.new_post, name="new_post"),
-    path("edit_post/<int:id>/", views.edit_post, name="edit_post"),
+    path("edit_post/<int:post_id>/", views.edit_post, name="edit_post"), #the same post_id parameter name should use in dashborad url parameter
 ]
