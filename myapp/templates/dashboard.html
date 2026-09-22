@@ -93,7 +93,7 @@
                                 <a class='btn btn-success' href="{% url 'myapp:edit_post' post_id=post.id %}">Edit</a> <!-- #the same post_id parameter name should use in edit_post url file parameter -->
                                 <button class='btn btn-danger' onclick="confirm_before_delete(`{% url 'myapp:delete_post' post_id=post.id %}`)">Delete</button>
                                 {% if not post.is_published %}
-                                <a class='btn btn-success' href="#">Publish post</a>
+                                <a class='btn btn-success' href="#">Publish</a>
                                 {% endif %}
                                </div>
                             </div>
