@@ -23,7 +23,7 @@ from django.core.mail import send_mail
 
 # Create your views here.
 def index(request):
-    all_data = Post.objects.all()
+    all_data = Post.objects.filter(is_published = True)
 
     pagionate_data = Paginator(all_data, 5) # Show 5 posts per page
 
@@ -214,3 +214,10 @@ def edit_post(request, post_id):
             messages.success(request, "Post updated successfully!")
             return redirect('myapp:dashboard')
     return render(request, 'edit_post.html', {"categories" : categories, "post": post, "form" : form}) 
+
+def delete_post(request, post_id):
+
+    data = get_object_or_404(Post, id = post_id)
+    data.delete()
+    messages.success(request, "post deleted successfully!")
+    return redirect('myapp:dashboard')

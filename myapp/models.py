@@ -21,6 +21,7 @@ class Post(models.Model):
     slug = models.SlugField(unique=True)
     category = models.ForeignKey(Categories, on_delete = models.CASCADE, related_name='posts')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    is_published = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

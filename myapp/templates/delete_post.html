@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Are you wanted to delete this {{ data.title }}</h1>
+
+<form action="post">
+
+<button class="btn btn-danger" type="submit">Delete</button>
+
+</form>
+
+{% endblock %}
