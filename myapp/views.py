@@ -15,6 +15,7 @@ from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 # heello = [
 #     {"id": 1, "name": "John", "age": 30},
@@ -97,6 +98,10 @@ def register(request):
             user = form.save(commit = False)
             user.set_password(form.cleaned_data['password'])
             user.save()
+
+            # add user to readers group
+            readers_group, created = Group.objects.get_or_create(name="Readers")
+            user.groups.add(readers_group)
             messages.success(request, "Registeration successful! You can now log in.")
             # message = 'Your email saved successfully!'
             # return render(request, 'register.html', {'form': form, 'message': message})
