@@ -14,6 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 
 # heello = [
 #     {"id": 1, "name": "John", "age": 30},
@@ -185,6 +186,7 @@ def reset_password(request,  uidb64, token):
             
     return render(request, 'password_reset.html', {'form': form})
 
+@login_required
 def new_post(request):
 
     categories = Categories.objects.all()
@@ -202,6 +204,7 @@ def new_post(request):
 
     return render(request, 'new_post.html', {'categories': categories, 'form' : form}) 
 
+@login_required
 def edit_post(request, post_id):
     categories = Categories.objects.all()
     post = get_object_or_404(Post, id=post_id)
@@ -215,6 +218,7 @@ def edit_post(request, post_id):
             return redirect('myapp:dashboard')
     return render(request, 'edit_post.html', {"categories" : categories, "post": post, "form" : form}) 
 
+@login_required
 def delete_post(request, post_id):
 
     data = get_object_or_404(Post, id = post_id)
@@ -222,6 +226,7 @@ def delete_post(request, post_id):
     messages.success(request, "post deleted successfully!")
     return redirect('myapp:dashboard')
 
+@login_required
 def publish_post(request, post_id):
     data = get_object_or_404(Post, id=post_id)
     data.is_published = True
