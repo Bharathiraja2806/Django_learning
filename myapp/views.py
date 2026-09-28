@@ -221,3 +221,10 @@ def delete_post(request, post_id):
     data.delete()
     messages.success(request, "post deleted successfully!")
     return redirect('myapp:dashboard')
+
+def publish_post(request, post_id):
+    data = get_object_or_404(Post, id=post_id)
+    data.is_published = True
+    data.save()
+    messages.success(request, "Post published successfully!")
+    return redirect('myapp:dashboard')

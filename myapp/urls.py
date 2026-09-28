@@ -20,4 +20,5 @@ urlpatterns = [
     path("new_post/", views.new_post, name="new_post"),
     path("edit_post/<int:post_id>/", views.edit_post, name="edit_post"), #the same post_id parameter name should use in dashborad url parameter
     path("delete_post/<int:post_id>/", views.delete_post, name="delete_post"), #the same post_id parameter name should use in dashborad url parameter
+    path("publish_post/<int:post_id>/", views.publish_post, name="publish_post"), #the same post_id parameter name should use in dashborad url parameter
 ]
