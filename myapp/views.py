@@ -14,7 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Group
 
 # heello = [
@@ -39,6 +39,9 @@ def index(request):
 
 def post(request, id):
     # data = next((item for item in heello if item["id"] == int(id)), None)
+    if request.user and not request.user.has_perm('myapp.view_post'):
+        messages.error(request, "you have no permission for view post page")
+        return redirect('myapp:index')
     try:
         data = Post.objects.get(slug=id) #either we can give id =  , or pk = id, both are same, but pk (primary key) is more generic, as it can be used for any primary key, not just id
         related_post = Post.objects.filter(category = data.category).exclude(pk=data.id)
@@ -192,6 +195,7 @@ def reset_password(request,  uidb64, token):
     return render(request, 'password_reset.html', {'form': form})
 
 @login_required
+@permission_required('myapp.add_post', raise_exception=True)
 def new_post(request):
 
     categories = Categories.objects.all()
@@ -232,6 +236,7 @@ def delete_post(request, post_id):
     return redirect('myapp:dashboard')
 
 @login_required
+@permission_required('myapp.can_publish', raise_exception=True)
 def publish_post(request, post_id):
     data = get_object_or_404(Post, id=post_id)
     data.is_published = True
